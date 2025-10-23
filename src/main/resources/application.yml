@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/bookmanagementsystem?useSSL=false&serverTimezone=UTC
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+jwt:
+  secret: at0ErIHSG8y/fjQUSLwWKBoejr6sEKCsiaGFVqtXCnGPv5WU32wEIFfmKtnPTv5Cg2LO5LcYjxPxnyeoRKCrVA==  # Replace with a strong, random key
+  expiration: 36000000  # 10 hours in milliseconds
