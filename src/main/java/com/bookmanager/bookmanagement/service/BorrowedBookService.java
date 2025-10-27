@@ -43,7 +43,7 @@ public class BorrowedBookService {
         return borrowedBookRepository.findByUser(user).stream()
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
-    }
+    } 
 
     private User getCurrentUser() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();

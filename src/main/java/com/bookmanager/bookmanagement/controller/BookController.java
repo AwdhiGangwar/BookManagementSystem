@@ -18,21 +18,21 @@ public class BookController {
 
     // Only ADMIN can add books
     @PostMapping
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<BookDTO> addBook(@RequestBody BookDTO bookDTO) {
         return ResponseEntity.ok(bookService.addBook(bookDTO));
     }
 
     // Only ADMIN can update books
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<BookDTO> updateBook(@PathVariable Long id, @RequestBody BookDTO bookDTO) {
         return ResponseEntity.ok(bookService.updateBook(id, bookDTO));
     }
 
     // Only ADMIN can delete books
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteBook(@PathVariable Long id) {
         bookService.deleteBook(id);
         return ResponseEntity.ok("Book deleted successfully");
@@ -40,14 +40,15 @@ public class BookController {
 
     // ADMIN and USER can view books
     @GetMapping
-    @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+
     public ResponseEntity<List<BookDTO>> getUserBooks() {
         return ResponseEntity.ok(bookService.getUserBooks());
     }
 
     // ADMIN and USER can search books
     @GetMapping("/search")
-    @PreAuthorize("hasAnyAuthority('ADMIN','USER')")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public ResponseEntity<List<BookDTO>> searchBooks(
             @RequestParam(required = false) String title,
             @RequestParam(required = false) String author,
