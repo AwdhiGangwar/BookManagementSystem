@@ -34,31 +34,33 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String path = request.getServletPath();
 
-        // ✅ Skip JWT validation for login and register endpoints
+        // ✅ Skip JWT validation for login & register endpoints
         if (path.startsWith("/api/auth")) {
             chain.doFilter(request, response);
             return;
         }
 
+        // ✅ Get Authorization header
         String authHeader = request.getHeader("Authorization");
         String token = null;
         String username = null;
 
-        // ✅ Extract token if present
+        // ✅ Extract JWT token if present
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             token = authHeader.substring(7);
             try {
                 username = jwtUtil.extractUsername(token);
             } catch (Exception e) {
-                logger.warn("Invalid JWT token: " + e.getMessage());
+                logger.warn("❌ Invalid JWT token: " + e.getMessage());
             }
         }
 
-        // ✅ Validate token and set authentication
+        // ✅ Validate JWT token and set authentication in context
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-            if (jwtUtil.validateToken(token, username)) {
+            // ✅ Corrected validation call
+            if (jwtUtil.validateToken(token, userDetails)) {
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(
                                 userDetails, null, userDetails.getAuthorities());
@@ -68,6 +70,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         }
 
+        // ✅ Continue filter chain
         chain.doFilter(request, response);
     }
 }

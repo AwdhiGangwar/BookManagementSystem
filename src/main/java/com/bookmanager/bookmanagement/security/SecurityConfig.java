@@ -27,23 +27,20 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            // Disable CSRF for APIs
             .csrf(csrf -> csrf.disable())
+            .cors(cors -> {}) // ✅ enable default CORS
 
-            // Authorize requests
             .authorizeHttpRequests(auth -> auth
-                // Allow these endpoints without token
-                .requestMatchers("/api/auth/register", "/api/auth/login").permitAll()
-                // Any other request must be authenticated
+                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/books/**").hasAnyAuthority("ADMIN", "USER")
+                .requestMatchers("/api/borrowed-books/**").hasAnyAuthority("ADMIN", "USER")
                 .anyRequest().authenticated()
             )
 
-            // No session; JWT-based authentication
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
 
-            // Add JWT filter before the default auth filter
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

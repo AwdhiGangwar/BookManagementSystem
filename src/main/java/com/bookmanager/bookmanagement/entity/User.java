@@ -22,6 +22,9 @@ public class User implements UserDetails {
     @Column(unique = true, nullable = false)
     private String username;
 
+    @Column(unique = true, nullable = false)  // ✅ Make email unique
+    private String email;
+    
     @Column(nullable = false)
     private String password;
 
@@ -31,13 +34,12 @@ public class User implements UserDetails {
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    // ✅ This tells Spring what authorities (roles) the user has
+    // ✅ Spring Security: provide authorities (roles)
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + this.role));
     }
 
-    // ✅ The following are required by UserDetails
     @Override
     public boolean isAccountNonExpired() {
         return true;
